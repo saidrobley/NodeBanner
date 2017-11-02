@@ -4,7 +4,9 @@
 
     <li>
         <%= professor.name %>
-        <button> <a href="/professors<%= professor._id%>" /a> Show more info</button>
+        <button> <a href="/professors/show/<%= professor._id%>"> Show</a></button>
+        <button> <a href="/professors/delete/<%= professor._id%>"> Delete</a></button>
+
     </li>
 
 <% }); %>
