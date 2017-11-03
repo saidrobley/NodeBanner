@@ -1,11 +1,11 @@
 <h1>Professors</h1>
 
-<%  professors.forEach(function (professor) { %>
+<%  professors.forEach(function (prof) { %>
 
     <li>
-        <%= professor.name %>
-        <button> <a href="/professors/show/<%= professor._id%>"> Show</a></button>
-        <button> <a href="/professors/delete/<%= professor._id%>"> Delete</a></button>
+        <%= prof.name %>
+        <button> <a href="/professors/show/<%= prof._id%>"> Show</a></button>
+        <button> <a href="/professors/delete/<%= prof._id%>"> Delete</a></button>
 
     </li>
 

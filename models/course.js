@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 // SCHEMA SETUP
-var professorSchema = new mongoose.Schema({
+var courseSchema = new mongoose.Schema({
     name: String,
     sections: [
         {
@@ -10,4 +10,4 @@ var professorSchema = new mongoose.Schema({
     ]
 });
 
-module.exports = mongoose.model("Professor", professorSchema);
+module.exports = mongoose.model("Course", professorSchema);

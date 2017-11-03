@@ -1,4 +1,13 @@
 <h1>This is the show template!</h1>
 
-<p><%= professor.name%></p>
+<strong> <%= prof.name%></strong>
+<stron>Section</stron>
 
+<% prof.sections.forEach(function(section){ %>
+<p>
+    <strong><%= section.number %></strong>
+</p>
+<% })%>
+
+
+<a href="/professors/<%= prof._id%>/sections/new">Add a section</a>
