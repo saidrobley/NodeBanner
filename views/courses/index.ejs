@@ -1,0 +1,14 @@
+<h1>Courses</h1>
+
+<%  courses.forEach(function (course) { %>
+
+<li>
+    <%= course.name %>
+    <button> <a href="/courses/show/<%= course._id%>"> Show</a></button>
+    <button> <a href="/courses/delete/<%= course._id%>"> Delete</a></button>
+
+</li>
+
+<% }); %>
+
+<a href="/courses/new">Add New Course</a>

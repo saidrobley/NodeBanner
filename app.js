@@ -1,10 +1,11 @@
 var express     = require("express"),
-    router      = express.Router();
+    router      = express.Router(),
     router         = express(),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
-    Section     = require("./models/section");
     Professor  = require("./models/professor"),
+    Section     = require("./models/section"),
+    Course      = require("./models/course");
 
 mongoose.connect("mongodb://localhost/banner");
 router.use(bodyParser.urlencoded({extended: true}))
@@ -94,8 +95,68 @@ router.get("/professors/:id", function(req, res){
         }
     });
 });
+//********************************************************************************************
+// ==============================
+// COURSES ROUTES
+// ==============================
+
+router.get("/courses", function (req, res) {
+   //get all courses from DB
+    Course.find({}, function (err, allCourses) {
+       if(err){
+           console.log(err);
+       }else{
+           res.render("courses/index", {courses: allCourses});
+       }
+
+    });
+
+});
+
+router.get("/courses/new", function (req, res) {
+    // render views courses/new
+    res.render("courses/new");
+});
+
+// routes for POST
+router.post("/courses", function (req, res) {
+   // get data from the form and add to DB
+    var name = req.body.name;
+    var newCourse = {name: name};
+    Course.create(newCourse, function (err, newlyCreated) {
+       if(err){
+           console.log(err);
+       } else{
+           res.redirect("/courses")
+       }
+    });
+});
+
+// DELETE - course
+router.get("/courses/delete/:id", function (req, res) {
+    Course.findByIdAndRemove(req.params.id, function (err) {
+        if(err){
+            res.redirect("/courses");
+        }else{
+            res.redirect("/courses");
+        }
+    });
+});
 
 
+//SHOW
+router.get("/courses/show/:id", function(req, res){
+    //find campground with provided ID
+    Course.findById(req.params.id).populate("sections").exec(function(err, foundCourse){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(foundCourse);
+            //render show template with that course
+            res.render("courses/show", {course: foundCourse});
+        }
+    });
+});
 
 //********************************************************************************************
 
