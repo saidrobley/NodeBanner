@@ -1,13 +1,22 @@
-<h1>This is the show template!</h1>
-
-<strong> <%= course.name%></strong>
-<stron>Section</stron>
-
-<% course.sections.forEach(function(section){ %>
 <p>
-    <strong><%= section.number %></strong>
+    <h1> <%= course.name%></h1>
 </p>
-<% })%>
+<br>
+<table>
+    <thead>
+        <tr>
 
+            <th>Course Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% course.sections.forEach(function( section){%>
+        <tr>
+            <td> <%= section.number%></td>
+        </tr>
+        <% })%>
+    </tbody>
+</table>
 
-<a href="/professors/<%= course._id%>/sections/new">Add a section</a>
+<br>
+<a href="/courses">All Courses</a>

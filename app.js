@@ -3,8 +3,8 @@ var express     = require("express"),
     router         = express(),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
-    Professor  = require("./models/professor"),
     Section     = require("./models/section"),
+    Professor  = require("./models/professor"),
     Course      = require("./models/course");
 
 mongoose.connect("mongodb://localhost/banner");
@@ -42,7 +42,7 @@ router.post("/professors", function(req, res){
             console.log(err);
         }else{
             //redirect back to professors page
-            res.redirect("/professors");
+            res.redirect("/professors/");
         }
 
     });
@@ -146,7 +146,7 @@ router.get("/courses/delete/:id", function (req, res) {
 
 //SHOW
 router.get("/courses/show/:id", function(req, res){
-    //find campground with provided ID
+    //find course with provided ID
     Course.findById(req.params.id).populate("sections").exec(function(err, foundCourse){
         if(err){
             console.log(err);
@@ -157,15 +157,146 @@ router.get("/courses/show/:id", function(req, res){
         }
     });
 });
+//SHOW
 
+
+
+
+
+
+/*
+router.get("/courses/show/:id", function(req, res){
+    //find course with provided ID
+    Course.findById(req.params.id, function(err, foundCourse){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(foundCourse);
+            //render show template with that course
+            res.render("courses/show", {course: foundCourse});
+        }
+    });
+}); */
+/*/ INDEX - show all professors page
+router.get("/professors", function(req, res){
+    // Get all professors from DB
+    Professor.find({}, function(err, allProfessors){
+        if(err){
+            console.log(err);
+        }else{
+            // render the location in the views.
+            res.render("professors/index", {professors:allProfessors});
+        }
+    });
+
+});*/
 //********************************************************************************************
 
 // ==================
 // SECTIONS ROUTES
 // ==================
 
+
+router.get("/sections", function (req, res) {
+    //get all courses from DB
+    Professor.find({}, function (err, allProfessors) {
+        if(err){
+            console.log(err);
+        }else{
+            res.render("sections/index", {professors: allProfessors});
+        }
+
+    });
+
+});
+
+
 // NEW ROUTE
+router.get("/sections/new", function (req, res) {
+    Professor.find({}, function (err, allprofessors) {
+       if(err){
+           console.log(err);
+       } else{
+           Course.find({}, function (err, allcourses) {
+              if(err){
+                  console.log(err);
+              } else{
+                  res.render("sections/new", {professors: allprofessors, courses: allcourses})
+              }
+           });
+       }
+    });
+});
+
+router.post("/sections/new/submitted/:id", function (req, res) {
+   var professor_id = req.body.professor_id;
+   var course_id = req.body.course_id;
+   var sectionName = req.body.section_name;
+  // var sectionName = {sectionName: sectionName}
+    console.log(professor_id);
+    console.log(course_id);
+    console.log(sectionName);
+    Professor.findById(professor_id, function (err, foundProf) {
+       if(err){
+           console.log(err);
+       } else{
+           Course.findById(course_id, function (err, foundCourse) {
+              if(err){
+                  console.log(err);
+              } else{
+                  console.log("found prof " + foundProf);
+                  // create new section
+                  var section = {number: sectionName, professor: foundProf, course: foundCourse};
+                  Section.create(section, function (err, section) {
+                     if(err){
+                         console.log(err);
+                     } else{
+                         // connect new section to professor
+                         foundProf.sections.push(section);
+                         foundProf.save();
+                         // connect new section to course
+                         foundCourse.sections.push(section);
+                         foundCourse.save();
+                         res.redirect("/sections/new");
+                     }
+                  });
+              }
+           });
+       }
+    });
+
+});
+
+router.get("/sections/show", function (req, res) {
+   Section.find({}, function (err, sections) {
+       if(err){
+           console.log(err);
+       }else {
+            res.render("sections/show", {sections: sections});
+       }
+   });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //NEW ROUTE
+/*
 router.get("/professors/:id/sections/new", function(req, res){
     //find campground by id
     Professor.findById(req.params.id, function(err, professor){
