@@ -1,15 +1,33 @@
-var express     = require("express"),
-    router      = express.Router(),
-    router         = express(),
-    bodyParser  = require("body-parser"),
-    mongoose    = require("mongoose"),
-    Section     = require("./models/section"),
-    Professor  = require("./models/professor"),
-    Course      = require("./models/course");
+var express                 = require("express"),
+    router                  = express.Router(),
+    router                  = express(),
+    passport                = require("passport"),
+    LocalStrategy           = require("passport-local"),
+    passportLocalMongoose   = require("passport-local-mongoose"),
+    bodyParser              = require("body-parser"),
+    mongoose                = require("mongoose"),
+    Section                 = require("./models/section"),
+    Professor               = require("./models/professor"),
+    Course                  = require("./models/course"),
+    User                    = require("./models/user");
 
 mongoose.connect("mongodb://localhost/banner");
+router.use(require("express-session")({
+    //secret will be use to encode and decode session
+    secret: "There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...",
+    resave: false,
+    saveUninitialized: false
+}));
 router.use(bodyParser.urlencoded({extended: true}))
 router.set("view engine", "ejs");
+
+router.use(passport.initialize());
+router.use(passport.session());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 
 router.get("/", function (req, res) {
    res.render("home.ejs");
