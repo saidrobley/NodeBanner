@@ -2,19 +2,28 @@
 
 <h1>Professors</h1>
 
-<%  professors.forEach(function (prof) { %>
+<table class="pretty-table">
+    <thead>
+    <tr >
+        <th scope="col">Name</th>
+        <th colspan="1"></th>
+        <th colspan="1"></th>
+    </tr>
+    </thead>
 
-    <li>
-        <%= prof.name %>
+    <tbody>
+    <%  professors.forEach(function (prof) { %>
+    <tr>
+        <td><%= prof.name %></td>
+        <td><button> <a href="/professors/show/<%= prof._id%>"> Show</a></button></td>
+        <td><button> <a href="/professors/delete/<%= prof._id%>"> Delete</a></button></td>
 
-        <button> <a href="/professors/show/<%= prof._id%>"> Show</a></button>
-        <button> <a href="/professors/delete/<%= prof._id%>"> Delete</a></button>
+    </tr>
+    <% }); %>
+    </tbody>
+</table>
+<br><br>
 
-    </li>
+<button><a href="/professors/new">Add New Professor</a></button>
 
-<% }); %>
 
-<a href="/professors/new">Add New Professor</a>
-<li><a href="/register">Sign Up!</a></li>
-<li><a href="/login">Login!</a></li>
-<li><a href="/logout">Logout!</a></li>

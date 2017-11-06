@@ -1,5 +1,5 @@
 var express                 = require("express"),
-    router                  = express.Router(),
+    // router                  = express.Router(),
     router                  = express(),
     passport                = require("passport"),
     LocalStrategy           = require("passport-local"),
@@ -23,6 +23,7 @@ router.set("view engine", "ejs");
 
 router.use(passport.initialize());
 router.use(passport.session());
+router.use(express.static('./public'))
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
