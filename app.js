@@ -24,18 +24,69 @@ router.set("view engine", "ejs");
 router.use(passport.initialize());
 router.use(passport.session());
 
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+router.use(function (req, res, next) {
+   res.locals.currentUser = req.user;
+   next();
+});
 
-
+//Signin page
 router.get("/", function (req, res) {
    res.render("home.ejs");
 });
 
+//Auth Routes
+router.get("/register", function (req, res) {
+    res.render("register");
+});
+
+//Handling the user sign up
+router.post("/register", function (req, res) {
+    req.body.username
+    req.body.password
+    User.register(new User({username: req.body.username}), req.body.password, function (err, user) {
+        if(err){
+            console.log(err);
+            return res.render('register');
+        }
+        passport.authenticate('local')(req, res, function () {
+            res.redirect("/professors");
+        })
+    })
+});
+
+// LOGIN ROUTES
+// render login form
+router.get("/login", function (req, res) {
+    res.render("login");
+});
+// login logic
+// middleware
+router.post("/login", passport.authenticate("local", {
+    successRedirect: "/professors",
+    failureRedirect: "/login"
+}), function (req, res) {
+});
+
+//logout
+router.get("/logout", function(req, res){
+   req.logout();
+   res.redirect("/");
+});
+
+function isLoggedIn(req, res, next) {
+    if(req.isAuthenticated()){
+        return next();
+    }
+    res.redirect("/login");
+}
+
 
 // INDEX - show all professors page
-router.get("/professors", function(req, res){
+router.get("/professors", isLoggedIn, function(req, res){
     // Get all professors from DB
     Professor.find({}, function(err, allProfessors){
         if(err){
@@ -68,7 +119,7 @@ router.post("/professors", function(req, res){
 });
 
 // Show - shows more info about one professor
-router.get("/professors/show/:id", function (req, res) {
+router.get("/professors/show/:id", isLoggedIn, function (req, res) {
     //Professor.findById(req.params.id).populate("sections").exec( function (err, foundProfessor) {
     Professor.findById(req.params.id).populate("sections").exec(function(err, foundProfessor){
         if(err){
@@ -82,7 +133,7 @@ router.get("/professors/show/:id", function (req, res) {
 });
 
 // DESTROY - professor
-router.get("/professors/delete/:id", function (req, res) {
+router.get("/professors/delete/:id", isLoggedIn, function (req, res) {
    Professor.findByIdAndRemove(req.params.id, function (err) {
      if(err){
          res.redirect("/professors");
@@ -94,14 +145,14 @@ router.get("/professors/delete/:id", function (req, res) {
 
 
 //NEW - show form to create new professor
-router.get("/professors/new", function(req, res){
+router.get("/professors/new", isLoggedIn, function(req, res){
     //res.render("professors/professors") ;
     res.render("professors/new")
 });
 
 
 //SHOW
-router.get("/professors/:id", function(req, res){
+router.get("/professors/:id", isLoggedIn, function(req, res){
     //find campground with provided ID
     Professor.findById(req.params.id).populate("sections").exec(function(err, foundProfessor){
         if(err){
@@ -118,7 +169,7 @@ router.get("/professors/:id", function(req, res){
 // COURSES ROUTES
 // ==============================
 
-router.get("/courses", function (req, res) {
+router.get("/courses", isLoggedIn, function (req, res) {
    //get all courses from DB
     Course.find({}, function (err, allCourses) {
        if(err){
@@ -131,7 +182,7 @@ router.get("/courses", function (req, res) {
 
 });
 
-router.get("/courses/new", function (req, res) {
+router.get("/courses/new", isLoggedIn, function (req, res) {
     // render views courses/new
     res.render("courses/new");
 });
@@ -151,7 +202,7 @@ router.post("/courses", function (req, res) {
 });
 
 // DELETE - course
-router.get("/courses/delete/:id", function (req, res) {
+router.get("/courses/delete/:id", isLoggedIn, function (req, res) {
     Course.findByIdAndRemove(req.params.id, function (err) {
         if(err){
             res.redirect("/courses");
@@ -163,7 +214,7 @@ router.get("/courses/delete/:id", function (req, res) {
 
 
 //SHOW
-router.get("/courses/show/:id", function(req, res){
+router.get("/courses/show/:id", isLoggedIn, function(req, res){
     //find course with provided ID
     Course.findById(req.params.id).populate("sections").exec(function(err, foundCourse){
         if(err){
@@ -215,7 +266,7 @@ router.get("/professors", function(req, res){
 // ==================
 
 
-router.get("/sections", function (req, res) {
+router.get("/sections", isLoggedIn, function (req, res) {
     //get all courses from DB
     Professor.find({}, function (err, allProfessors) {
         if(err){
@@ -230,7 +281,7 @@ router.get("/sections", function (req, res) {
 
 
 // NEW ROUTE
-router.get("/sections/new", function (req, res) {
+router.get("/sections/new", isLoggedIn, function (req, res) {
     Professor.find({}, function (err, allprofessors) {
        if(err){
            console.log(err);
@@ -285,7 +336,7 @@ router.post("/sections/new/submitted/:id", function (req, res) {
 
 });
 
-router.get("/sections/show", function (req, res) {
+router.get("/sections/show", isLoggedIn, function (req, res) {
    Section.find({}, function (err, sections) {
        if(err){
            console.log(err);
