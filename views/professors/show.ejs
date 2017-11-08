@@ -4,21 +4,31 @@
     <h1> <%= prof.name%></h1>
 </p>
 <br>
-<table>
+<table class="pretty-table">
     <thead>
         <tr>
+            <th><%= prof.name%></th>
             <th>Section Number</th>
+
         </tr>
     </thead>
     <tbody>
         <% prof.sections.forEach(function( section){%>
         <tr>
+            <td></td>
             <td> <%= section.number%></td>
         </tr>
         <% })%>
     </tbody>
 </table>
 
+
+
+
+
+
 <br>
 <a href="/sections/new">Add a section</a>
 <!--<a href="/professors/<%= prof._id%>/sections/new">Add a section</a>
+
+<% include ../partials/footer %>

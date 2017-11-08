@@ -2,16 +2,30 @@
 
 <h1>Courses</h1>
 
-<%  courses.forEach(function (course) { %>
 
-<li>
-    <%= course.name %>
-    <button> <a href="/courses/show/<%= course._id%>"> Show</a></button>
-    <button> <a href="/courses/delete/<%= course._id%>"> Delete</a></button>
+<% include ../partials/footer %>
 
-</li>
 
-<% }); %>
+<table class="pretty-table">
+    <thead>
+    <tr >
+        <th scope="col">Name</th>
+        <th colspan="1"></th>
+        <th colspan="1"></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <%  courses.forEach(function (course) { %>
+    <tr>
+        <td><%= course.name %></td>
+        <td><button> <a href="/courses/show/<%= course._id%>"> Show</a></button></td>
+        <td><button> <a href="/courses/delete/<%= course._id%>"> Delete</a></button></td>
+
+    </tr>
+    <% }); %>
+    </tbody>
+</table>
+<br><br>
 
 <a href="/courses/new">Add New Course</a>
-<% include ../partials/footer %>

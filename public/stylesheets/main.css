@@ -12,6 +12,12 @@
 }
 
 
+body{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
 .pretty-table
 {
     width: 50%;

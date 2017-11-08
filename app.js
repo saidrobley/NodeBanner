@@ -12,6 +12,7 @@ var express                 = require("express"),
     User                    = require("./models/user");
 
 mongoose.connect("mongodb://localhost/banner");
+
 router.use(require("express-session")({
     //secret will be use to encode and decode session
     secret: "There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...",
@@ -35,7 +36,7 @@ router.use(function (req, res, next) {
 });
 
 //Signin page
-router.get("/", function (req, res) {
+router.get("/", isLoggedIn, function (req, res) {
    res.render("home.ejs");
 });
 
@@ -78,6 +79,7 @@ router.get("/logout", function(req, res){
    res.redirect("/");
 });
 
+//middleware
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()){
         return next();
